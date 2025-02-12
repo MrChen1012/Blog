@@ -3,9 +3,11 @@
 
 ## 高级进阶篇
 
+## 高级进阶篇
+
 ### 1. **架构设计相关**
 
-- **微前端（Micro Frontend）**：类似微服务架构在前端的应用，通过独立的小模块组合形成完整的前端应用。
+- [**微前端（Micro Frontend）**](https://github.com/MrChen1012/Blog/issues/1)：类似微服务架构在前端的应用，通过独立的小模块组合形成完整的前端应用。
 - **单页面应用（SPA）与多页面应用（MPA）**：深入讨论SPA的优缺点、如何处理SEO问题（如服务端渲染SSR、预渲染等）。
 - **状态管理（State Management）**：除了Redux，提到一些较为复杂的状态管理模式，如Flux、Recoil、Zustand等。
 - **服务端渲染（SSR）与静态生成（SSG）**：如Next.js、Nuxt.js的实现，讨论它们在SEO和性能优化中的作用。
