@@ -64,9 +64,11 @@ pnpm run dev
 
 ##### 3. 断点创建`reactive`对象位置以及改变值的位置，快速过一遍，看看用到了源码中的哪些方法
 
-![image-20250226162340745](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250226162340745.png)
 
-![image-20250226162526995](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250226162526995.png)
+![image-20250226162340745](https://github.com/user-attachments/assets/b2b9d295-92ea-466f-b2be-dd5cef6b9a4f)
+
+![image-20250226162522948](https://github.com/user-attachments/assets/5dfe4ce4-cc98-4d8d-96d2-638797da5f25)
+
 
 ### 核心方法、类
 
