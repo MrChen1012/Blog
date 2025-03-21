@@ -176,3 +176,78 @@ function deepClone(obj, map = new WeakMap()) {
 
     return result
 }
+
+// 实现个简单的发布订阅模式 订阅 执行 取消订阅
+class EventMitter {
+    constructor() {
+        this.list = {}
+    }
+    on(key, fn) {
+        if (!this.list[key]) this.list[key] = []
+        this.list[key].push(fn)
+    }
+    emit(key, ...args) {
+        if (!this.list[key]) return
+        this.list[key].forEach(cb => {
+            cb(...args)
+        })
+    }
+    off(key, fn) {
+        if (!this.list[key]) return
+        this.list[key] = this.list[key].filter(cb => cb !== fn)
+    }
+}
+
+// 1.两数之和-给定一个数组 nums 和一个目标值 target，在该数组中找出和为目标值的两个数
+/**
+ * 思路：
+ * 遍历数组，取出一个数，从左到右进行相加对比，直至结束，或者有合适的数就进行保存
+ * 需要注意已经对比过的值，后续遍历时要跳过
+ */
+
+function summation(arr, sum) {
+    let result = []
+    arr.forEach((item, index) => {
+        const subArr = arr.slice(index)
+        subArr.forEach((subItem, subIndex) => {
+            if (item + subItem === sum) result.push([item, subItem])
+        })
+    })
+    return result.length ? result : 0
+}
+
+// 优化 使用map
+function summation1(arr, sum) {
+    let result = []
+    let map = new Map()
+    arr.forEach(num => {
+        const complement = sum - num
+        if (map.has(complement)) {
+            result.push([complement, num])
+        }
+        map.set(complement, true)
+    })
+    return result.length ? result : 0
+}
+
+// 快速排序
+/**
+ * 思路
+ * 1 把数组一分为二 取中间值作为基准
+ * 2 创建左右数组 进行遍历，小于基准值加入左边数组 大于基准值加入右边数组
+ * 3 递归方法 数组小于两个值时返回
+ */
+function quickSort(arr) {
+    if (arr.length < 2) return arr
+    const pivotIndex = Math.floor(arr.length / 2)
+    const pivot = arr[pivotIndex]
+    const left = []
+    const right = []
+
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === pivot) continue
+        arr[i] < pivot ? left.push(arr[i]) : right.push(arr[i])
+    }
+
+    return [...quickSort(left), pivot, ...quickSort(right)]
+}
