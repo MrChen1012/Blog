@@ -260,3 +260,30 @@ function flushJobs(seen?: CountMap) {
 }
 ```
 
+### `baseCreateRenderer`函数
+
+最后，让我们看下`queueJob`函数的调用位置，追踪到`packages\runtime-core\src\renderer.ts`
+
+```js
+js 代码解读复制代码function baseCreateRenderer(
+  options: RendererOptions,
+  createHydrationFns?: typeof createHydrationFunctions,
+): any {
+  ...
+  const setupRenderEffect: SetupRenderEffectFn = (...)=>{
+  ...
+    const update = (instance.update = effect.run.bind(effect))
+    const job: SchedulerJob = (instance.job = effect.runIfDirty.bind(effect))
+    job.i = instance
+    job.id = instance.uid
+    effect.scheduler = () => queueJob(job)
+    ...
+  }
+  ...
+}
+```
+
+看到这里是不是就清晰明了了，`queueJob`被赋值到`effect`的调度器，响应式对象发生改变后，执行`effect.run`，`trigger`触发副作用，如果存在`scheduler`则执行，并传入`effect`，这里的具体原理参考上篇文章：[Vue3源码解析之Ref、Effect](https://juejin.cn/post/7477424318438211611)
+
+
+
