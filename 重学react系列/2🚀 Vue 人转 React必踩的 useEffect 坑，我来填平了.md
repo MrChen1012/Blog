@@ -1,4 +1,4 @@
-# 🚀 Vue人转React必踩的 useEffect 坑，我来填平了
+# 🚀 Vue 人转 React必踩的 useEffect 坑，我来填平了
 
 
 > 这篇文章是写给正从 Vue 转向 React、被 useEffect 弄懵的你。

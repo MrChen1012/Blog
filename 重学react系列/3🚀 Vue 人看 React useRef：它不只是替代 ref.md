@@ -1,4 +1,4 @@
-# 🚀 Vue人看React useRef：它不只是替代 ref
+# 🚀 Vue 人看 React useRef：它不只是替代 ref
 
 
 > 如果你是从 Vue 转到 React 的开发者，初见 `useRef` 可能会想：这不就是 React 版的 `ref` 吗？但真相是 —— 它能做的，比你想象得多得多。
