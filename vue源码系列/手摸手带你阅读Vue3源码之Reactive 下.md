@@ -1,4 +1,4 @@
-# 手摸手带你阅读vue3源码之Reactive 下
+# 手摸手带你阅读Vue3源码之Reactive 下
 
 
 
@@ -17,9 +17,9 @@
 
 ### 1.追踪到 `packages/reactivity/src/dep.ts` 文件
 
-该文件包含了 Vue 3 响应式系统的核心部分，主要负责依赖收集与触发机制。它实现了 **发布订阅模式**，通过 `Dep` 和 `链接` 类来管理数据与视图的更新关系。下面逐步讲解文件中的关键部分和它们在发布订阅模式中的作用。
+该文件包含了 Vue 3 响应式系统的核心部分，主要负责依赖收集与触发机制。它实现了 **发布订阅模式**，通过 `Dep` 和 `Link` 类来管理数据与视图的更新关系。下面逐步讲解文件中的关键部分和它们在发布订阅模式中的作用。
 
-### 2.`链接` 类解析
+### 2.`Link` 类解析
 
 ```js
 export class Link {
@@ -43,12 +43,12 @@ export class Link {
 
 ```
 
-- `链接` 类表示一个 **订阅者**（`sub`）与一个 **依赖**（`dep`）之间的关联。
+- `Link` 类表示一个 **订阅者**（`sub`）与一个 **依赖**（`dep`）之间的关联。
 - `version`：记录依赖的版本号，在每次依赖变更时更新，用于确保只在数据发生变化时才触发视图更新。
 - `nextDep` 和 `prevDep`：在 `Dep` 类中形成一个 **双向链表**，用于跟踪订阅者的依赖关系。
 - `nextSub` 和 `prevSub`：在订阅者（`Effect`）之间形成双向链表，方便管理每个订阅者的依赖关系。
 
-**总结**：`链接` 是 `Dep`（依赖）和 `Effect`（订阅者）之间的 **桥梁**，它维护着 **依赖和订阅者的关系**，并通过链表连接。
+**总结**：`Link` 是 `Dep`（依赖）和 `Effect`（订阅者）之间的 **桥梁**，它维护着 **依赖和订阅者的关系**，并通过链表连接。
 
 ### 3.`Dep` 类解析
 
@@ -186,7 +186,7 @@ function addSub(link: Link) {
 
 ```
 
-- 将 `链接` 添加到 `Dep` 的订阅者链表中。
+- 将 `Link` 添加到 `Dep` 的订阅者链表中。
 - 计算属性（`computed`）在首次订阅时需要递归订阅其所有依赖。
 - 维护双向链表，确保订阅者可以在依赖发生变化时被通知。
 
@@ -332,102 +332,83 @@ const handler = {
 
 1.从创建`reactive`对象开始
 
-![image-20250227104242439](https://github.com/user-attachments/assets/b6442f9c-1e88-4a12-86db-c29bb902767f)
-
+![image-20250227104242439](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227104242439.png)
 
 2.进入`reactive`方法里，可以看到我们的target已经赋值了原始对象
 
-![image-20250227104436499](https://github.com/user-attachments/assets/c30eb70c-9d1f-4791-84ae-40a71fe9b7f7)
-
+![image-20250227104436499](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227104436499.png)
 
 3.判断完对象为可读后，进入到`createReactiveObject`方法，我们看看此时的参数赋值了什么
 
-![image-20250227104628108](https://github.com/user-attachments/assets/c94261b8-d8b7-45aa-a687-d16a212fc1e1)
-
+![image-20250227104628108](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227104628108.png)
 
 4.判断`target`为正常对象且此时还不是`Proxy`对象时，进入到`getTargetType`方法，进行类型判断
 
-![image-20250227104917876](https://github.com/user-attachments/assets/15f8bb3c-1bca-4439-ad81-990ef5c87fc7)
-
+![image-20250227104917876](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227104917876.png)
 
 5.经过了对象判断，进入到`targetTypeMap`方法，判断为普通对象类型，输出`TargetType.COMMON`
 
-![image-20250227105124330](https://github.com/user-attachments/assets/9524fd49-a654-453f-8d9e-20020ad32edd)
-
+![image-20250227105124330](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227105124330.png)
 
 6.判断对象是否已经存在对应的`Proxy`了，有的话则返回
 
-![image-20250227105341329](https://github.com/user-attachments/assets/8a1b5dc1-cd4c-48bd-8944-4b6c27a69a3a)
+![image-20250227105341329](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227105341329.png)
 
+7.经过重重校验后，终于创建成功了新的`Proxy`实例，并将新的`Proxy`缓存到`proxyMap`
 
-7.经过重重判断后，终于创建成功了新的`Proxy`实例，并将新的`Proxy`缓存到`proxyMap`
-
-![image-20250227105656222](https://github.com/user-attachments/assets/cd1d374c-2b17-4675-a62c-0d905ba61cf4)
-
+![image-20250227105656222](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227105656222.png)
 
 ### 改变`reactive`对象
 
 1.从修改`reactive`对象开始
 
-![image-20250227110022083](https://github.com/user-attachments/assets/a2a6c2f8-fb84-426a-8ac6-a002d06cefd0)
-
+![image-20250227110022083](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227110022083.png)
 
 2.进入到`MutableReactiveHandler`类中，先看参数赋值，这一步获取当前属性的旧值
 
 `MutableReactiveHandler`类上面文章详讲过，不了解的前往：[手摸手带你阅读Vue3源码之Reactive 上](https://juejin.cn/post/7475607042527821864)
 
-![image-20250227110249466](https://github.com/user-attachments/assets/db912faa-6f72-400f-be75-98933daafb3d)
-
+![image-20250227110249466](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227110249466.png)
 
 3.进入**非浅响应**判断，先获取旧值是否只读
 
-![image-20250227111144129](https://github.com/user-attachments/assets/7e6c8df1-ef3e-4a89-9d4a-70ed0d61d36e)
-
+![image-20250227111144129](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227111144129.png)
 
 4.进入**新值和旧值都不是浅层响应和只读**的判断，并且把旧值跟新值的原始值存起来
 
-![image-20250227111304304](https://github.com/user-attachments/assets/5ee47a5b-7124-4ab2-af24-22632832f3a9)
+![image-20250227111304304](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227111304304.png)
 
-
-![image-20250227111424039](https://github.com/user-attachments/assets/56ce8df3-2d37-4b4c-a2bf-425b9d2136fc)
-
+![image-20250227111424039](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227111424039.png)
 
 5.下个判断为**如果旧值是 ref 类型而新值不是 ref**，不符合条件，跳过到下一步
 
 6.判断目标对象是否已经存在该属性
 
-![image-20250227112229870](https://github.com/user-attachments/assets/72403087-f3e3-480f-ad7e-caffa3473e8f)
-
+![image-20250227112229870](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227112229870.png)
 
 7.使用 Reflect.set 执行属性赋值
 
-![image-20250227112332922](https://github.com/user-attachments/assets/4a68b020-d747-49c7-b189-532c137505b2)
-
+![image-20250227112332922](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227112332922.png)
 
 8.进入下一个判断**如果目标对象没有被代理（即没有包装成 Proxy）**
 
-![image-20250227112441454](https://github.com/user-attachments/assets/19b48cfb-2ec1-47ac-bf5f-626acc4bf329)
-
+![image-20250227112441454](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227112441454.png)
 
 9.已有属性值，并且属性值发生变化，触发 SET 操作
 
-![image-20250227112737860](https://github.com/user-attachments/assets/e48925cd-1ef2-4985-83d8-6802ba859129)
-
+![image-20250227112737860](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227112737860.png)
 
 10.进入到`trigger`函数中，先看传参值，这一步从从全局 `targetMap` 获取当前 `target` 对象的 `depsMap`
 
-![image-20250227112909479](https://github.com/user-attachments/assets/1ef43d2c-03be-4777-87ec-1a3dd2fe6c70)
-
+![image-20250227112909479](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227112909479.png)
 
 11.`target` 没有被追踪过，直接返回，增加全局版本号
 
-![image-20250227113510191](https://github.com/user-attachments/assets/6640bc44-1a6f-4af0-82d9-b24c8d9db92b)
-
+![image-20250227113510191](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227113510191.png)
 
 12.return出`trigger`函数，回到`MutableReactiveHandler`类的`set`方法，返回`true`修改完毕
 
-![image-20250227113651159](https://github.com/user-attachments/assets/cccbce23-f109-4d41-9622-e5e48c150305)
-
+![image-20250227113651159](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250227113651159.png)
 
 ### 总结
 
@@ -436,6 +417,11 @@ const handler = {
 - 在改变属性时，会触发`MutableReactiveHandler`中的`set`方法
 - 当新值被设置时，`set` 方法会触发 `trigger` 函数，进而触发依赖的更新
 - 在 `trigger` 中，从 `targetMap` 中根据目标对象和属性名（`key`）获取对应的副作用函数，然后执行该函数，从而完成依赖的触发。
-- 在 `trigger` 中，从 `targetMap` 中根据目标对象和属性名（`key`）获取对应的副作用函数，然后执行该函数，从而完成依赖的触发。
-- `reactive` 的不足之处：首先，解构后的对象不再具备响应性；其次，`reactive` 只支持对象类型的响应式，不支持基本数据类型。
+
+
+
+## Vue3 源码解析系列
+
+1. [手摸手带你阅读Vue3源码之Reactive 上](https://juejin.cn/post/7475607042527821864)
+2. [手摸手带你阅读Vue3源码之Reactive 下](https://juejin.cn/spost/7475754150790266914)
 

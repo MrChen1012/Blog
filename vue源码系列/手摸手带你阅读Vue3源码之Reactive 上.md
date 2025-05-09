@@ -1,19 +1,17 @@
-# 手摸手教你如何阅读vue3源码-reactive
+# 手摸手带你阅读Vue3源码之Reactive 上
 
-
-
-### 前言
+## 前言
 
 你是否曾想过，Vue3 中的 `reactive` 究竟是如何在幕后管理数据和视图更新的？本文将带你深入挖掘 Vue3 响应式系统的精髓，从源码中解开 `reactive` 的工作原理，帮助你在实际开发中更好地运用这一强大的功能。
 
-学习 `reactive` 源码，你可以获得以下技能和知识：
+##### 学习 `reactive` 源码，你可以获得以下技能和知识：
 
-1. 深入理解 JavaScript 中的 `Proxy` 和 `Reflect`，掌握它们的使用和优势。
-2. 学会如何在响应式系统中追踪依赖，触发视图更新，实现 **发布订阅模式**。
-3. 了解 Vue 如何处理深度嵌套的对象，并支持浅响应和深响应模式。
-4. 学到性能优化的技巧，如何高效地管理依赖和更新。
+1. **深入理解 JavaScript 中的 `Proxy` 和 `Reflect`**，掌握它们的使用方法及优势。
+2. **掌握响应式系统的依赖追踪与视图更新**，即 **发布订阅模式**。
+3. **处理深度嵌套对象**，并理解如何支持浅响应和深响应模式。
+4. **性能优化技巧**，如何高效管理依赖和更新。
 
-### 基础步骤
+## 基础步骤
 
 ##### 1. 拉取 Vue3 最新源码并运行
 
@@ -64,13 +62,11 @@ pnpm run dev
 
 ##### 3. 断点创建`reactive`对象位置以及改变值的位置，快速过一遍，看看用到了源码中的哪些方法
 
+![image-20250226162340745](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250226162340745.png)
 
-![image-20250226162340745](https://github.com/user-attachments/assets/b2b9d295-92ea-466f-b2be-dd5cef6b9a4f)
+![image-20250226162526995](C:\Users\chenl\AppData\Roaming\Typora\typora-user-images\image-20250226162526995.png)
 
-![image-20250226162522948](https://github.com/user-attachments/assets/5dfe4ce4-cc98-4d8d-96d2-638797da5f25)
-
-
-### 核心方法、类
+## 核心方法、类
 
 #### 下面是创建 `reactive` 对象以及修改时所用到的关键方法和类，我们逐个解析，先了解完用到的方法，再去进行断点调试加深了解
 
@@ -431,3 +427,25 @@ ownKeys(target: Record<string | symbol, unknown>): (string | symbol)[] {
 通过上述代码，我们了解了 Vue3 如何通过 `Proxy` 和 `Reflect` 实现响应式数据的追踪与更新。`reactive` 方法通过创建代理对象，能够监听对象属性的变化，并自动触发视图更新。
 
 下篇文章我们将对MutableReactiveHandler类所用到的toRaw、track、trigger方法进行讲解，捋清vue3发布订阅模式的思路，以及正式在浏览器中断点调试创建`reactive`对象位置以及改变值的流程
+
+
+
+## Vue3 源码解析系列(掘金)
+
+1. [手摸手带你阅读Vue3源码之Reactive 上](https://juejin.cn/post/7475607042527821864)
+2. [手摸手带你阅读Vue3源码之Reactive 下](https://juejin.cn/post/7475754150790266914)
+
+
+
+## Vue3 源码解析系列(CSDN)
+
+1. [手摸手带你阅读Vue3源码之Reactive 上](https://blog.csdn.net/chenlmw/article/details/145885775)
+2. [手摸手带你阅读Vue3源码之Reactive 下](https://blog.csdn.net/chenlmw/article/details/145902399)
+
+
+
+## Vue3 源码解析系列(GitHub)
+
+1. [手摸手带你阅读Vue3源码之Reactive 上](https://github.com/MrChen1012/Blog/blob/master/%E6%89%8B%E6%91%B8%E6%89%8B%E5%B8%A6%E4%BD%A0%E9%98%85%E8%AF%BBvue3%E6%BA%90%E7%A0%81%E4%B9%8BReactive%20%E4%B8%8A.md)
+2. [手摸手带你阅读Vue3源码之Reactive 下](https://github.com/MrChen1012/Blog/blob/master/%E6%89%8B%E6%91%B8%E6%89%8B%E5%B8%A6%E4%BD%A0%E9%98%85%E8%AF%BBvue3%E6%BA%90%E7%A0%81%E4%B9%8BReactive%20%E4%B8%8B.md)
+
